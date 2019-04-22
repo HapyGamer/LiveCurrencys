@@ -26,8 +26,8 @@ namespace LiveCurrency
     public sealed partial class MainPage : Page
     {
 
-		private int gridHeight;
-		private int gridWidth;
+		private int gridHeight = 10;
+		private int gridWidth = 15;
 
         public MainPage()
         {
@@ -51,10 +51,30 @@ namespace LiveCurrency
 
 			for (int y = 0; y < gridHeight; y++)
 			{
-				for (int x = 0; x < gridWidth; x++)
-				{
 
-				}
+				TextBlock text = new TextBlock();
+				CurrencyGraph.Children.Add(text);
+				text.VerticalAlignment = VerticalAlignment.Bottom;
+				text.HorizontalAlignment = HorizontalAlignment.Left;
+				text.TextAlignment = TextAlignment.Center;
+
+				text.Margin = new Thickness(-50, 0, 0, -10 + (y * 50));
+				text.Height = 30;
+				text.Width = 50;
+				text.Text = y.ToString();
+
+			}
+			for (int x = 0; x < gridWidth; x++)
+			{
+				TextBlock text = new TextBlock();
+				CurrencyGraph.Children.Add(text);
+				text.VerticalAlignment = VerticalAlignment.Bottom;
+				text.HorizontalAlignment = HorizontalAlignment.Left;
+				text.TextAlignment = TextAlignment.Center;
+				text.Margin = new Thickness(-10 + (x * 50), 0, 0, -50 );
+				text.Height = 30;
+				text.Width = 50;
+				text.Text = x.ToString();
 			}
 		}
 	}
