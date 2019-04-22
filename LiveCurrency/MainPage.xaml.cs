@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +25,37 @@ namespace LiveCurrency
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+		private int gridHeight;
+		private int gridWidth;
+
         public MainPage()
         {
             this.InitializeComponent();
+			APIHelper.InitializeClient();
+			LoadGrid();
         }
-    }
+
+		private async void UpdateRate_Click(object sender, RoutedEventArgs e)
+		{
+			await LoadRate();
+		}
+
+		private async Task LoadRate()
+		{
+			var currency = await CurrencyProcessor.LoadCurrency();
+		}
+
+		private void LoadGrid()
+		{
+
+			for (int y = 0; y < gridHeight; y++)
+			{
+				for (int x = 0; x < gridWidth; x++)
+				{
+
+				}
+			}
+		}
+	}
 }
