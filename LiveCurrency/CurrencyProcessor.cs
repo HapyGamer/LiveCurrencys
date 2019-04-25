@@ -13,10 +13,28 @@ namespace LiveCurrency
 		/// add in date
 		/// </summary>
 		/// <returns></returns>
+		public static async Task<CurrencyModel> LoadCurrency(int year, int month, int day)
+		{
+			string url = "https://api.exchangeratesapi.io/" + year + "-" + month + "-" + day;
+			
+			using (HttpResponseMessage response = await APIHelper.APIClient.GetAsync(url))
+			{
+				if (response.IsSuccessStatusCode)
+				{
+					CurrencyModel currency = await response.Content.ReadAsAsync<CurrencyModel>();
+					return currency;
+				}
+				else
+				{
+					throw new Exception(response.ReasonPhrase);
+				}
+			}
+
+		}
 		public static async Task<CurrencyModel> LoadCurrency()
 		{
 			string url = "https://api.exchangeratesapi.io/latest";
-			
+
 			using (HttpResponseMessage response = await APIHelper.APIClient.GetAsync(url))
 			{
 				if (response.IsSuccessStatusCode)

@@ -4,17 +4,102 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:LiveCurrency"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Charting ="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Grid Margin="100"
-              x:Name="CurrencyGraph"
-              Background="Orange">
+        <Image Source="Assets/stocktrade.jpg"
+               Stretch="Fill"
+               Opacity="0.8"/>
+        <Grid Margin="100">
+
+            <Charting:Chart x:Name="CurrencyGraph"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,0"
+                            Width="1000"
+                            Height="620"
+                            Background="Gray"
+                            >
+
+            </Charting:Chart>
+
+            <StackPanel VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Margin="-40,-50,0,0"
+                        Orientation="Horizontal"
+                        Background="LightGray"
+                        >
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="AUD"
+                             x:Name="CheckBox0" 
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="BGN"
+                             x:Name="CheckBox1"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="NZD"
+                             x:Name="CheckBox2"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="ILS"
+                             x:Name="CheckBox3"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="USD"
+                             x:Name="CheckBox4"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="GBP"
+                             x:Name="CheckBox5"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="CNY"
+                             x:Name="CheckBox6"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="INR"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+                <CheckBox VerticalAlignment="Top"
+                             HorizontalAlignment="Left"
+                             Content="SEK"
+                             x:Name="CheckBox7"
+                             Checked="EnableShowRates" 
+                             Unchecked="DisableShowRates"/>
+            </StackPanel>
+
+            <Button VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    Margin="0,-85"
+                    Height="30"
+                    Width="120"
+                    Content="Update Graph"
+                    Background="LightGray" Click="UpdateTheGraph">
+                
+            </Button>
 
 
         </Grid>
+
 
     </Grid>
 </Page>

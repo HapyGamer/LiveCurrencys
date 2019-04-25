@@ -15,67 +15,106 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI;
+using WinRTXamlToolkit.Controls.DataVisualization.Charting;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace LiveCurrency
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
+    
+	public class AUDRates
+	{
+		public string Name { get; set; }
+		public double Rate { get; set; }
+	}
+
     public sealed partial class MainPage : Page
-    {
+    {		
+		private int gridWidth = 10;
+		private List<string> currencies = new List<string>();
 
-		private int gridHeight = 10;
-		private int gridWidth = 15;
-
-        public MainPage()
+		public MainPage()
         {
             this.InitializeComponent();
 			APIHelper.InitializeClient();
-			LoadGrid();
         }
 
-		private async void UpdateRate_Click(object sender, RoutedEventArgs e)
+
+
+		private async void LoadGrid(List<string> currencyRates)
 		{
-			await LoadRate();
+			CurrencyGraph.Series.Clear();
+			var labelStyle = new Style(typeof(AxisLabel));
+			labelStyle.Setters.Add(new Setter(AxisLabel.StringFormatProperty, "{##.###}"));
+			LinearAxis linearAxis = new LinearAxis { Orientation = AxisOrientation.Y, ShowGridLines = true };
+			for (int i = 0; i < currencies.Count; i++)
+			{
+				List<AUDRates> rates = new List<AUDRates>();
+				for (int x = 0; x <= gridWidth; x++)
+				{
+					var dateAndTime = DateTime.Now.AddDays(-gridWidth + x);
+					CurrencyModel rate;
+
+					if (x < gridWidth)
+						rate = await CurrencyProcessor.LoadCurrency(dateAndTime.Year, dateAndTime.Month, dateAndTime.Day);
+
+					else
+						rate = await CurrencyProcessor.LoadCurrency();
+
+					var text = dateAndTime.Date.ToString("dd/MM/yyyy");
+					rates.Add(new AUDRates() { Name = text, Rate = (double)Math.Round(rate.Rates[currencyRates[i]], 4) });
+				}
+
+				//create new graph
+
+				LineSeries lineseries = new LineSeries();
+				lineseries.Title = currencyRates[i] + "Rates";
+				lineseries.Margin = new Thickness(0, 0, 0, 0);
+				lineseries.IndependentValuePath = "Name";
+				lineseries.DependentValuePath = "Rate";
+				lineseries.IsSelectionEnabled = true;
+
+				CurrencyGraph.Series.Add(lineseries);
+
+				
+				(CurrencyGraph.Series[i] as LineSeries).ItemsSource = rates;
+				linearAxis = new LinearAxis { Orientation = AxisOrientation.Y, ShowGridLines = true,Title = currencyRates[i]};
+				lineseries.DependentRangeAxis = linearAxis;
+				var axis = (LinearAxis)lineseries.DependentRangeAxis;
+				axis.AxisLabelStyle = labelStyle;
+			}
 		}
 
-		private async Task LoadRate()
+		private void EnableShowRates(object sender, RoutedEventArgs e)
 		{
-			var currency = await CurrencyProcessor.LoadCurrency();
+			CheckBox CheckBox = sender as CheckBox;
+			string currency = CheckBox.Content.ToString();
+			currencies.Add(currency);
 		}
 
-		private void LoadGrid()
+		private void DisableShowRates(object sender, RoutedEventArgs e)
 		{
-
-			for (int y = 0; y < gridHeight; y++)
+			CheckBox CheckBox = sender as CheckBox;
+			string currency = CheckBox.Content.ToString();
+			if (currencies.Count > 0)
 			{
-
-				TextBlock text = new TextBlock();
-				CurrencyGraph.Children.Add(text);
-				text.VerticalAlignment = VerticalAlignment.Bottom;
-				text.HorizontalAlignment = HorizontalAlignment.Left;
-				text.TextAlignment = TextAlignment.Center;
-
-				text.Margin = new Thickness(-50, 0, 0, -10 + (y * 50));
-				text.Height = 30;
-				text.Width = 50;
-				text.Text = y.ToString();
-
+				for(int i = 0; i < currencies.Count; i++)
+				{
+					if (currencies[i] == currency)
+					{
+						currencies.RemoveAt(i);
+					}
+				}
 			}
-			for (int x = 0; x < gridWidth; x++)
-			{
-				TextBlock text = new TextBlock();
-				CurrencyGraph.Children.Add(text);
-				text.VerticalAlignment = VerticalAlignment.Bottom;
-				text.HorizontalAlignment = HorizontalAlignment.Left;
-				text.TextAlignment = TextAlignment.Center;
-				text.Margin = new Thickness(-10 + (x * 50), 0, 0, -50 );
-				text.Height = 30;
-				text.Width = 50;
-				text.Text = x.ToString();
-			}
+			
+		}
+
+		private void UpdateTheGraph(object sender, RoutedEventArgs e)
+		{
+			if(currencies.Count > 0)
+				LoadGrid(currencies);
 		}
 	}
 }
